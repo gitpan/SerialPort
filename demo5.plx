@@ -4,7 +4,7 @@
 
 BEGIN { $| = 1; print "demo5.plx loaded "; }
 END {print "not ok 1\n" unless $loaded;}
-use SerialPort 0.08;
+use Win32::SerialPort 0.08;
 $loaded = 1;
 print "ok 1\n";
 
@@ -75,7 +75,7 @@ my $cfgfile = $file."_test.cfg";
 
 # 2: Constructor
 
-$ob = SerialPort->start ($cfgfile) or die "Can't start $cfgfile\n";
+$ob = Win32::SerialPort->start ($cfgfile) or die "Can't start $cfgfile\n";
     # next test will die at runtime unless $ob
 
 # 3: Prints Prompts to Port and Main Screen

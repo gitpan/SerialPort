@@ -89,7 +89,7 @@ sub is_bad {
 }
 
 my $file = "COM1";
-my $cfgfile = $file."_test.cfg";
+my $cfgfile = "../".$file."_test.cfg";
 
 my $naptime = 0;	# pause between output pages
 if (@ARGV) {

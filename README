@@ -1,5 +1,5 @@
 Win32::SerialPort and Win32API::CommPort
-VERSION=0.10, 29 August 1998
+VERSION=0.12, 9 November 1998
 
 Hello Beta testers:
 
@@ -10,9 +10,36 @@ selected over performance. Since everything is (sometimes convoluted but
 still pure) perl, you can fix flaws and change limits if required. But
 please file a bug report if you do.
 
-This is the first public beta. Some features are not yet implemented.
-I suspect there are still bugs - but I don't know of any. If the code
-does not match the documentation, consider it a bug and please report it.
+This is the second public beta. A few features are not yet implemented.
+I suspect there are still bugs - but I only know of one: "is_parity_enable"
+sometimes fails on NT (test4.t #68). I have not been able to duplicate this
+bug on my system. If you do get this test to fail, please let me know if
+you can isolate it to some line in the module source code. If you see any
+place where the code does not match the documentation, consider it a bug
+and please report it.
+
+COMPATIBILITY NOTES:
+
+1. This distribution adds "Install.PL" which puts the modules into
+   the appropriate locations in the perl directory structure for
+   perl versions 5.004 and above. Existing scripts which relied on
+   a standalone directory instead of the documented Namespaces will
+   need to be changed. 
+
+2. Users of ActiveState Build 3xx can not use "Install.PL", "use blib"
+   and other MakeMaker-based tools. Hence, files needed for testing 
+   have been put into a Build_3xx subdirectory. Do NOT install those -
+   follow the instructions below. The files in the Build_3xx directory
+   are similar to, but not identical to, the files for later versions
+   of perl.
+
+3. Html documentation (created with pod2html) is included in this
+   distribution since build 3xx users don't have pod2html. Document
+   source is included in pod format in the modules. Although perl
+   5.005 provides for specifying an "installhtmldir", I do not
+   currently support this feature so I can keep a single "Install.PL".
+   You will have to relocate the html files manually.
+
 Please tell me what doesn't work, what you dislike (or like), and what
 should be added (or deleted). One very visible change from the alpha is
 the division into two modules:
@@ -21,7 +48,8 @@ the division into two modules:
    CommPort.
 
 2. Win32API::CommPort is the raw API calls and other internal details
-   that most users won't need to know much about.
+   that most users won't need to know much about. Some exported names
+   have changed in beta 2 - but this change should not impact any users.
 
 These modules use Aldo Calpini's Win32::API module extensively. It is
 available at:
@@ -43,49 +71,89 @@ to the others who have contributed comments and suggestions.
 FILES:
     Changes		- for history lovers
     MANIFEST		- file list
-    README.txt		- this file
-    README    		- same file with CPAN-friendly name
+    README.txt		- this file (CRLF)
+    README    		- same file with CPAN-friendly name (LF only)
     Makefile.PL		- incomplete, but still the "starting point"
-    SerialPort.pm	- the reason you're reading this
-    CommPort.pm		- the raw API calls and other internals
     SerialPort.html	- since AS 3xx doesn't have pod2html
     CommPort.html	- since AS 3xx doesn't have pod2html
-    test1.t		- RUN ME FIRST, tests and creates configuration
-    test2.t		- tests restarting_a_configuration and timeouts
-    test3.t		- Inheritance and export version of test1.t
-    test4.t		- Inheritance version of test2.t
-    test5.t		- tests to optional exports from CommPort
-    AltPort.pm		- Inheritance stub
     demo1.plx		- talks to a "really dumb" terminal
     demo2.plx		- "poor man's" readline and chat
     demo3.plx		- looks like a setup menu - but only looks :-(
     demo4.plx		- simplest setup: "new", "required param", "restart"
     demo5.plx		- a basic "waitfor" function
     demo6.plx		- a basic "readline" function
+    Install.PL		- install using MakeMaker tools (5.004 and above)
+    options.plx		- post-install test that prints available options
 
-This is a preliminary release for testing only. While I will try to
+    blib				- install directory
+    blib/arch				- empty (for MakeMaker)
+    blib/lib				- install directory
+    blib/lib/Win32			- install directory
+    blib/lib/Win32/SerialPort.pm	- the reason you're reading this
+    blib/lib/Win32API			- install directory
+    blib/lib/Win32API/CommPort.pm	- the raw API calls and other internals
+
+    t			- test directory
+    t/Altport.pm	- stub for inheritance test
+    t/test1.t		- RUN ME FIRST, tests and creates configuration
+    t/test2.t		- tests restarting_a_configuration and timeouts
+    t/test3.t		- Inheritance and export version of test1.t
+    t/test4.t		- Inheritance version of test2.t and "restart"
+    t/test5.t		- tests to optional exports from CommPort
+
+    Build_3xx/AltPort.pm	- non-Namespace version of tests
+    Build_3xx/CommPort.pm	- non-Namespace version of tests
+    Build_3xx/SerialPort.pm	- non-Namespace version of tests
+    Build_3xx/test1.t 		- non-Namespace version of tests
+    Build_3xx/test2.t		- non-Namespace version of tests
+    Build_3xx/test3.t		- non-Namespace version of tests
+    Build_3xx/test4.t		- non-Namespace version of tests
+    Build_3xx/test5.t		- non-Namespace version of tests
+
+This is a preliminary production release. While I will try to
 maintain backwards compatibility from this point forward, I can't
-guarantee it.  This module is NOT ready for production use.
-Consider the lack of an Install program to be a feature and run in a
-"standalone" directory. Run 'perl Makefile.PL' first with nothing
-connected to "COM1". On ActiveState Build 3xx this will give test
-instructions. On 5.004 and above it will run the tests automatically
-with the Benchmark routines. This tests most of the module methods and
-leaves the port set for 9600 baud, 1 stop, 8 data, no parity, no
-handshaking, and other defaults. At various points in the testing, it
-expects unconnected CTS and DTR lines. The final configuration is saved
-as COM1_test.cfg.
+guarantee it.
 
-The tests may be run individually by typing 'perl test?.t Page_Delay'.
+Run 'perl Makefile.PL' first with nothing connected to "COM1". On
+ActiveState Build 3xx this will give test instructions. On 5.004 and
+above it will run the tests automatically with the Benchmark routines.
+This tests most of the module methods and leaves the port set for 9600
+baud, 1 stop, 8 data, no parity, no handshaking, and other defaults.
+At various points in the testing, it expects unconnected CTS and DTR
+lines. The final configuration is saved as COM1_test.cfg in this
+directory.
+
+The tests in "Build_3xx" may be run individually by typing:
+	'perl test?.t Page_Delay'
 With no delay, the tests execute too rapidly to follow from an MS-DOS
-bo individually by typing 'perl test?.t Page_Delay'.
-With no delay, some tests execute too rapidly to follow from the
 command line. Delay may be set from 1 to 5 seconds.
+
+After installation ('perl Install.PL' or manual for build 3xx), tests
+in the "t" subdirectory may be run the same way. There is a "use blib"
+line near the start of each test that must be enabled in order to run
+indiviual tests before installation - but I don't expect anyone to do
+that.
 
 All tests are expected to pass - I would be very interested in hearing
 about failures ("not ok"). These tests should be run from a command
 line (DOS box).
 
+INSTALLATION:
+1. For perl versions 5.004 and above, run 'perl Install.PL". That's it!
+
+2. For ActiveState build 3xx, use "Start->Find" to locate "API.pm".
+   Copy "blib/lib/Win32/SerialPort.pm" to the same directory in
+   which you found "API.pm" (I'm using slash for directory separator -
+   but your command line might require backslash "\"). The "blib" path
+   starts from the directory where you found this README file.
+
+3. Check if the directory above "API.pm" has a subdirectory "Win32API".
+   If not, create one (most installations will NOT have this directory
+   already). Copy "blib/lib/Win32API/CommPort.pm" to this directory.
+
+4. Run 'perl options.plx'. It should run without errors.
+
+DEMO PROGRAMS:
 Connect a dumb terminal (or a PC that acts like one) to COM1 and setup
 the equivalent configuration. Starting demo1.plx should print a three
 line message on both the terminal and the Win32 command line. The
@@ -110,6 +178,12 @@ give it a (valid) configuration file on the command line, it will open
 the port with those parameters (and "initialized" set - so you can test
 simple changes: see the parity example at the end of demo3.plx).
 
+Run options.plx to see the available choices for various parameters
+along with the current values. If you have trouble, I will probably
+ask you to save the output of options.plx in a file and send it to me.
+You can specify a port name for options.plx on the command line
+(e.g. 'perl options.plx COM2').
+
 Demo4.plx is a "minimum" script showing just the basics needed to get
 started.
 
@@ -120,11 +194,14 @@ more options are necessary.
 
 Please tell me what does and what doesn't work. Which systems "croak".
 You can share this with anyone. But it's still beta code. Don't trust it
-for anything important. And watch for frequent updates at:
+for anything important without complete testing. The feedback I have
+received, and my own testing, indicate the code is already pretty robust.
+And watch for frequent updates at:
 
 %%%% http://members.aol.com/Bbirthisel/alpha.html
 
-or CPAN under Win32::SerialPort and Win32API::CommPort
+or CPAN under authors/id/B/BB/BBIRTH or
+              Win32::SerialPort and Win32API::CommPort
 
 Thanks,
 

@@ -1,5 +1,6 @@
 # This part includes the low-level API calls
-package CommPort;
+package CommPort; # test and install only
+#### package Win32API::CommPort;
 
 use Win32;
 use Win32::API 0.01;
@@ -11,59 +12,57 @@ use strict;
 no strict 'subs';	# these may be imported someday
 
 use vars qw(
-	$CloseHandle		$CreateFile		$GetCommState
-	$ReadFile		$SetCommState		$SetupComm
-	$PurgeComm		$CreateEvent		$GetCommTimeouts
-	$SetCommTimeouts	$GetCommProperties	$ClearCommBreak
-	$ClearCommError		$EscapeCommFunction	$GetCommConfig
-	$GetCommMask		$GetCommModemStatus	$SetCommBreak
-	$SetCommConfig		$SetCommMask		$TransmitCommChar
-	$WaitCommEvent		$WriteFile		$GetLocalError
-	$GetOverlappedResult	$ResetEvent
+	$_CloseHandle		$_CreateFile		$_GetCommState
+	$_ReadFile		$_SetCommState		$_SetupComm
+	$_PurgeComm		$_CreateEvent		$_GetCommTimeouts
+	$_SetCommTimeouts	$_GetCommProperties	$_ClearCommBreak
+	$_ClearCommError	$_EscapeCommFunction	$_GetCommConfig
+	$_GetCommMask		$_GetCommModemStatus	$_SetCommBreak
+	$_SetCommConfig		$_SetCommMask		$_TransmitCommChar
+	$_WaitCommEvent		$_WriteFile		$_ResetEvent
+	$_GetOverlappedResult
 );
 
-$CreateFile = new Win32::API("kernel32", "CreateFile",
+$_CreateFile = new Win32::API("kernel32", "CreateFile",
 	 [P, N, N, N, N, N, N], N);
-$CloseHandle = new Win32::API("kernel32", "CloseHandle", [P], N);
-$GetCommState = new Win32::API("kernel32", "GetCommState", [N, P], I);
-$SetCommState = new Win32::API("kernel32", "SetCommState", [N, P], I);
-$SetupComm = new Win32::API("kernel32", "SetupComm", [N, N, N], I);
-$PurgeComm = new Win32::API("kernel32", "PurgeComm", [N, N], I);
-$CreateEvent = new Win32::API("kernel32", "CreateEvent", [P, I, I, P], N);
-$GetCommTimeouts = new Win32::API("kernel32", "GetCommTimeouts",
+$_CloseHandle = new Win32::API("kernel32", "CloseHandle", [P], N);
+$_GetCommState = new Win32::API("kernel32", "GetCommState", [N, P], I);
+$_SetCommState = new Win32::API("kernel32", "SetCommState", [N, P], I);
+$_SetupComm = new Win32::API("kernel32", "SetupComm", [N, N, N], I);
+$_PurgeComm = new Win32::API("kernel32", "PurgeComm", [N, N], I);
+$_CreateEvent = new Win32::API("kernel32", "CreateEvent", [P, I, I, P], N);
+$_GetCommTimeouts = new Win32::API("kernel32", "GetCommTimeouts",
 	 [N, P], I);
-$SetCommTimeouts = new Win32::API("kernel32", "SetCommTimeouts",
+$_SetCommTimeouts = new Win32::API("kernel32", "SetCommTimeouts",
 	 [N, P], I);
-$GetCommProperties = new Win32::API("kernel32", "GetCommProperties",
+$_GetCommProperties = new Win32::API("kernel32", "GetCommProperties",
 	 [N, P], I);
-$ReadFile = new Win32::API("kernel32", "ReadFile", [N, P, N, P, P], I);
-$WriteFile = new Win32::API("kernel32", "WriteFile", [N, P, N, P, P], I);
-    # note name change below!
-$GetLocalError = new Win32::API("kernel32", "GetLastError", [], N);
-$TransmitCommChar = new Win32::API("kernel32", "TransmitCommChar", [N, I], I);
-$ClearCommBreak = new Win32::API("kernel32", "ClearCommBreak", [N], I);
-$SetCommBreak = new Win32::API("kernel32", "SetCommBreak", [N], I);
-$ClearCommError = new Win32::API("kernel32", "ClearCommError", [N, P, P], I);
-$EscapeCommFunction = new Win32::API("kernel32", "EscapeCommFunction",
+$_ReadFile = new Win32::API("kernel32", "ReadFile", [N, P, N, P, P], I);
+$_WriteFile = new Win32::API("kernel32", "WriteFile", [N, P, N, P, P], I);
+$_TransmitCommChar = new Win32::API("kernel32", "TransmitCommChar", [N, I], I);
+$_ClearCommBreak = new Win32::API("kernel32", "ClearCommBreak", [N], I);
+$_SetCommBreak = new Win32::API("kernel32", "SetCommBreak", [N], I);
+$_ClearCommError = new Win32::API("kernel32", "ClearCommError", [N, P, P], I);
+$_EscapeCommFunction = new Win32::API("kernel32", "EscapeCommFunction",
 	 [N, N], I);
-$GetCommModemStatus = new Win32::API("kernel32", "GetCommModemStatus",
+$_GetCommModemStatus = new Win32::API("kernel32", "GetCommModemStatus",
 	 [N, P], I);
-$GetOverlappedResult = new Win32::API("kernel32", "GetOverlappedResult",
+$_GetOverlappedResult = new Win32::API("kernel32", "GetOverlappedResult",
 	 [N, P, P, I], I);
 
 #### these are not used yet
 
-$GetCommConfig = new Win32::API("kernel32", "GetCommConfig", [N, P, P], I);
-$GetCommMask = new Win32::API("kernel32", "GetCommMask", [N, P], I);
-$SetCommConfig = new Win32::API("kernel32", "SetCommConfig", [N, P, N], I);
-$SetCommMask = new Win32::API("kernel32", "SetCommMask", [N, N], I);
-$WaitCommEvent = new Win32::API("kernel32", "WaitCommEvent", [N, P, P], I);
-$ResetEvent = new Win32::API("kernel32", "ResetEvent", [N], I);
+$_GetCommConfig = new Win32::API("kernel32", "GetCommConfig", [N, P, P], I);
+$_GetCommMask = new Win32::API("kernel32", "GetCommMask", [N, P], I);
+$_SetCommConfig = new Win32::API("kernel32", "SetCommConfig", [N, P, N], I);
+$_SetCommMask = new Win32::API("kernel32", "SetCommMask", [N, N], I);
+$_WaitCommEvent = new Win32::API("kernel32", "WaitCommEvent", [N, P, P], I);
+$_ResetEvent = new Win32::API("kernel32", "ResetEvent", [N], I);
 
 use strict;
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-$VERSION = '0.10';
+$VERSION = '0.12';
 
 require Exporter;
 ## require AutoLoader;
@@ -88,19 +87,19 @@ require Exporter;
 				ST_INPUT	ST_OUTPUT
 				ST_ERROR )],
 
-		RAW	=> [qw( $CloseHandle		$CreateFile
-				$GetCommState		$ReadFile
-				$SetCommState		$SetupComm
-				$PurgeComm		$CreateEvent
-				$GetCommTimeouts	$SetCommTimeouts
-				$GetCommProperties	$ClearCommBreak
-				$ClearCommError		$EscapeCommFunction
-				$GetCommConfig		$GetCommMask
-				$GetCommModemStatus	$SetCommBreak
-				$SetCommConfig		$SetCommMask
-				$TransmitCommChar	$WaitCommEvent
-				$WriteFile		$GetLocalError
-				$GetOverlappedResult	$ResetEvent
+		RAW	=> [qw( CloseHandle		CreateFile
+				GetCommState		ReadFile
+				SetCommState		SetupComm
+				PurgeComm		CreateEvent
+				GetCommTimeouts		SetCommTimeouts
+				GetCommProperties	ClearCommBreak
+				ClearCommError		EscapeCommFunction
+				GetCommConfig		GetCommMask
+				GetCommModemStatus	SetCommBreak
+				SetCommConfig		SetCommMask
+				TransmitCommChar	WaitCommEvent
+				WriteFile		ResetEvent
+				GetOverlappedResult
 				PURGE_TXABORT		PURGE_RXABORT
 				PURGE_TXCLEAR		PURGE_RXCLEAR
 				SETXOFF			SETXON
@@ -179,6 +178,114 @@ require Exporter;
 Exporter::export_ok_tags('STAT', 'RAW', 'COMMPROP', 'DCB', 'PARAM');
 
 $EXPORT_TAGS{ALL} = \@EXPORT_OK;
+
+#### subroutine wrappers for API calls
+
+sub CloseHandle {
+    return unless ( 1 == @_ );
+    return $_CloseHandle->Call( shift );
+    # boolean not usually checked
+}
+
+sub CreateFile {
+    return $_CreateFile->Call( @_ );
+    # returns handle
+}
+
+sub GetCommState {
+    return $_GetCommState->Call( @_ );
+}
+
+sub SetCommState {
+    return $_SetCommState->Call( @_ );
+}
+
+sub SetupComm {
+    return $_SetupComm->Call( @_ );
+}
+
+sub PurgeComm {
+    return $_PurgeComm->Call( @_ );
+}
+
+sub CreateEvent {
+    return $_CreateEvent->Call( @_ );
+}
+
+sub GetCommTimeouts {
+    return $_GetCommTimeouts->Call( @_ );
+}
+
+sub SetCommTimeouts {
+    return $_SetCommTimeouts->Call( @_ );
+}
+
+sub GetCommProperties {
+    return $_GetCommProperties->Call( @_ );
+}
+
+sub ReadFile {
+    return $_ReadFile->Call( @_ );
+}
+
+sub WriteFile {
+    return $_WriteFile->Call( @_ );
+}
+
+sub TransmitCommChar {
+    return $_TransmitCommChar->Call( @_ );
+}
+
+sub ClearCommBreak {
+    return unless ( 1 == @_ );
+    return $_ClearCommBreak->Call( shift );
+}
+
+sub SetCommBreak {
+    return unless ( 1 == @_ );
+    return $_SetCommBreak->Call( shift );
+}
+
+sub ClearCommError {
+    return $_ClearCommError->Call( @_ );
+}
+
+sub EscapeCommFunction {
+    return $_EscapeCommFunction->Call( @_ );
+}
+
+sub GetCommModemStatus {
+    return $_GetCommModemStatus->Call( @_ );
+}
+
+sub GetOverlappedResult {
+    return $_GetOverlappedResult->Call( @_ );
+}
+
+sub GetCommConfig {
+    return $_GetCommConfig->Call( @_ );
+}
+
+sub GetCommMask {
+    return $_GetCommMask->Call( @_ );
+}
+
+sub SetCommConfig {
+    return $_SetCommConfig->Call( @_ );
+}
+
+sub SetCommMask {
+    return $_SetCommMask->Call( @_ );
+}
+
+sub WaitCommEvent {
+    return $_WaitCommEvent->Call( @_ );
+}
+
+sub ResetEvent {
+    return unless ( 1 == @_ );
+    return $_ResetEvent->Call( shift );
+}
 
 #### "constant" declarations from Win32 header files ####
 #### compatible with ActiveState ####
@@ -473,19 +580,19 @@ sub new {
 
     $self->{NAME}     = shift;
 
-    $self->{"_HANDLE"}=$CreateFile->Call("$self->{NAME}",
-					 0xc0000000,
-					 0,	
-					 $null,
-					 3,	
-					 0x40000080,
-					 $null);
+    $self->{"_HANDLE"}=CreateFile("$self->{NAME}",
+				  0xc0000000,
+				  0,	
+				  $null,
+				  3,
+				  0x40000000,
+				  $null);
 	# device name
 	# GENERIC_READ | GENERIC_WRITE
 	# no FILE_SHARE_xx
 	# no SECURITY_xx
 	# OPEN_EXISTING
-	# FILE_ATTRIBUTE_NORMAL | FILE_FLAG_OVERLAPPED
+	# FILE_FLAG_OVERLAPPED
 	# template file
 
     unless ($self->{"_HANDLE"} >= 1) {
@@ -504,7 +611,7 @@ sub new {
 		           $CP_ProvSpec1,
 		           $CommPropBlank);
 
-    $ok=$GetCommProperties->Call($self->{"_HANDLE"}, $CommProperties);
+    $ok=GetCommProperties($self->{"_HANDLE"}, $CommProperties);
 
     unless ( $ok ) {
         OS_Error;
@@ -660,7 +767,6 @@ sub new {
     # buffers
     $self->{"_R_OVERLAP"}	= " "x24;
     $self->{"_W_OVERLAP"}	= " "x24;
-    $self->{"_DCB"}		= " "x32;
     $self->{"_TIMEOUT"}		= " "x24;
     $self->{"_RBUF"}		= " "x4096;
 
@@ -852,10 +958,10 @@ sub new {
     ###		$self->{"_N_PARITY"}
 
 
-    $self->{"_R_EVENT"} = $CreateEvent->Call($null,	# no security
-  	                                     1,		# explicit reset req
-  	                                     0,		# initial event reset
-  	                                     $null);	# no name
+    $self->{"_R_EVENT"} = CreateEvent($null,	# no security
+  	                              1,	# explicit reset req
+  	                              0,	# initial event reset
+  	                              $null);	# no name
     unless ($self->{"_R_EVENT"}) {
         OS_Error;
         carp "could not create required read event";
@@ -863,10 +969,10 @@ sub new {
         return;
     }
 
-    $self->{"_W_EVENT"} = $CreateEvent->Call($null,	# no security
-  	                                     1,		# explicit reset req
-  	       	                             0,		# initial event reset
-  	       	                             $null);	# no name
+    $self->{"_W_EVENT"} = CreateEvent($null,	# no security
+  	                              1,	# explicit reset req
+  	       	                      0,	# initial event reset
+  	       	                      $null);	# no name
     unless ($self->{"_W_EVENT"}) {
         OS_Error;
         carp "could not create required write event";
@@ -893,9 +999,10 @@ sub new {
         undef $self;
         return;
     }
+    $self->{"_L_BAUD"}{$self->{BAUD}} = $self->{BAUD}; # actual must be ok
+
 	# Read Timeouts
-    unless ( $GetCommTimeouts->Call($self->{"_HANDLE"},
-				    $self->{"_TIMEOUT"}) ) {
+    unless ( GetCommTimeouts($self->{"_HANDLE"}, $self->{"_TIMEOUT"}) ) {
         carp "Error in GetCommTimeouts";
         undef $self;
         return;
@@ -918,9 +1025,9 @@ sub fetch_DCB {
     my $fmask;
     my $key;
     my $value;
+    my $dcb = " "x32;
 
-    $GetCommState->Call($self->{"_HANDLE"}, $self->{"_DCB"}) or
-    	return;
+    GetCommState($self->{"_HANDLE"}, $dcb) or return;
 
     ($self->{"_DCBLength"},
      $self->{BAUD},
@@ -936,11 +1043,30 @@ sub fetch_DCB {
      $self->{ERRCHAR},
      $self->{EOFCHAR},
      $self->{EVTCHAR},
-     $self->{"_PackWORD"})= unpack($DCBformat, $self->{"_DCB"});
+     $self->{"_PackWORD"})= unpack($DCBformat, $dcb);
 
     if ($self->{"_DCBLength"} > 32) {
         carp "invalid DCB block length";
         return;
+    }
+
+    if ($Babble) {
+        printf "DCBLength= %d\n", $self->{"_DCBLength"};
+        printf "BaudRate= %d\n", $self->{BAUD};
+        printf "BitMask= %lx\n", $self->{"_BitMask"};
+        printf "ResvWORD= %x\n", $self->{"_ResvWORD"};
+        printf "XonLim= %x\n", $self->{XONLIM};
+        printf "XoffLim= %x\n", $self->{XOFFLIM};
+        printf "ByteSize= %d\n", $self->{DATA};
+        printf "Parity= %d\n", $self->{"_Parity"};
+        printf "StopBits= %d\n", $self->{"_StopBits"};
+        printf "XonChar= %x\n", $self->{XONCHAR};
+        printf "XoffChar= %x\n", $self->{XOFFCHAR};
+        printf "ErrorChar= %x\n", $self->{ERRCHAR};
+        printf "EofChar= %x\n", $self->{EOFCHAR};
+        printf "EvtChar= %x\n", $self->{EVTCHAR};
+        printf "PackWORD= %x\n", $self->{"_PackWORD"};
+        printf "handle= %d\n\n", $self->{"_HANDLE"};
     }
 
     $fmask = 1 + $self->{"_StopBits"};
@@ -998,25 +1124,6 @@ sub update_DCB {
     return unless (defined $self->{"_INIT"});
 
     fetch_DCB ($self);
-
-    if ($Babble) {
-        printf "DCBLength= %d\n", $self->{"_DCBLength"};
-        printf "BaudRate= %d\n", $self->{BAUD};
-        printf "BitMask= %lx\n", $self->{"_BitMask"};
-        printf "ResvWORD= %x\n", $self->{"_ResvWORD"};
-        printf "XonLim= %x\n", $self->{XONLIM};
-        printf "XoffLim= %x\n", $self->{XOFFLIM};
-        printf "ByteSize= %d\n", $self->{DATA};
-        printf "Parity= %d\n", $self->{"_Parity"};
-        printf "StopBits= %d\n", $self->{"_StopBits"};
-        printf "XonChar= %x\n", $self->{XONCHAR};
-        printf "XoffChar= %x\n", $self->{XOFFCHAR};
-        printf "ErrorChar= %x\n", $self->{ERRCHAR};
-        printf "EofChar= %x\n", $self->{EOFCHAR};
-        printf "EvtChar= %x\n", $self->{EVTCHAR};
-        printf "PackWORD= %x\n", $self->{"_PackWORD"};
-        printf "handle= %d\n", $self->{"_HANDLE"};
-    }
 
     if ($self->{"_N_HSHAKE"}) {
         $self->{HSHAKE} = $self->{"_N_HSHAKE"};
@@ -1123,29 +1230,30 @@ sub update_DCB {
         $self->{"_N_EVTCHAR"} = 0;
     }
 
-    $self->{"_DCB"} = pack($DCBformat,
-		           $self->{"_DCBLength"},
-		           $self->{BAUD},
-		           $self->{"_BitMask"},
-		           $self->{"_ResvWORD"},
-		           $self->{XONLIM},
-		           $self->{XOFFLIM},
-		           $self->{DATA},
-		           $self->{"_Parity"},
-		           $self->{"_StopBits"},
-		           $self->{XONCHAR},
-		           $self->{XOFFCHAR},
-		           $self->{ERRCHAR},
-		           $self->{EOFCHAR},
-		           $self->{EVTCHAR},
-		           $self->{"_PackWORD"});
+    my $dcb = pack($DCBformat,
+		   $self->{"_DCBLength"},
+		   $self->{BAUD},
+		   $self->{"_BitMask"},
+		   $self->{"_ResvWORD"},
+		   $self->{XONLIM},
+		   $self->{XOFFLIM},
+		   $self->{DATA},
+		   $self->{"_Parity"},
+		   $self->{"_StopBits"},
+		   $self->{XONCHAR},
+		   $self->{XOFFCHAR},
+		   $self->{ERRCHAR},
+		   $self->{EOFCHAR},
+		   $self->{EVTCHAR},
+		   $self->{"_PackWORD"});
 
-    if ( $SetCommState->Call($self->{"_HANDLE"}, $self->{"_DCB"}) ) {
+    if ( SetCommState($self->{"_HANDLE"}, $dcb) ) {
         print "updated DCB for $self->{NAME}\n" if ($Babble);
     }
     else {
 	carp "SetCommState failed";
-        if (1 or $Babble) {
+        OS_Error;
+        if ($Babble) {
 	    printf "\ntried to write:\n";
             printf "DCBLength= %d\n", $self->{"_DCBLength"};
             printf "BaudRate= %d\n", $self->{BAUD};
@@ -1201,8 +1309,7 @@ sub initialize {
 	}
         $self->{"_N_READBUF"} = 0;
         $self->{"_N_WRITEBUF"} = 0;
-	$SetupComm->Call($self->{"_HANDLE"},
-			 $self->{READBUF}, $self->{WRITEBUF});
+	SetupComm($self->{"_HANDLE"}, $self->{READBUF}, $self->{WRITEBUF});
     }
     purge_all($self);
     return $fault;
@@ -1218,7 +1325,7 @@ sub is_status {
         $self->{"_LATCH"} |= shift;
     }
 
-    $ok=$ClearCommError->Call($self->{"_HANDLE"}, $error_p, $CommStatus);
+    $ok=ClearCommError($self->{"_HANDLE"}, $error_p, $CommStatus);
 
     my $Error_BitMask	= unpack("L", $error_p);
     $self->{"_LATCH"} |= $Error_BitMask;
@@ -1453,7 +1560,7 @@ sub is_buffers {
     return unless (@_ == 2);
     my $rbuf = shift;
     my $wbuf = shift;
-    $SetupComm->Call($self->{"_HANDLE"}, $rbuf, $wbuf) or return;
+    SetupComm($self->{"_HANDLE"}, $rbuf, $wbuf) or return;
     $self->{"_N_READBUF"}	= 0;
     $self->{"_N_WRITEBUF"}	= 0;
     $self->{READBUF}		= $rbuf;
@@ -1479,11 +1586,11 @@ sub read_bg {
     }
     $self->{"_R_BUSY"} = 1;
 
-    $ok=$ReadFile->Call(	$self->{"_HANDLE"},
-    				$self->{"_RBUF"},
-			 	$wanted,
-			 	$got_p,
-			 	$self->{"_R_OVERLAP"});
+    $ok=ReadFile( $self->{"_HANDLE"},
+    		  $self->{"_RBUF"},
+		  $wanted,
+		  $got_p,
+		  $self->{"_R_OVERLAP"});
 
     if ($ok) {
         $got = unpack("L", $got_p);
@@ -1507,11 +1614,11 @@ sub write_bg {
     my $written = 0;
     $self->{"_W_BUSY"} = 1;
 
-    $ok=$WriteFile->Call( $self->{"_HANDLE"},
-			  $wbuf,
-			  $lbuf,
-			  $got_p,
-			  $self->{"_W_OVERLAP"});
+    $ok=WriteFile( $self->{"_HANDLE"},
+		   $wbuf,
+		   $lbuf,
+		   $got_p,
+		   $self->{"_W_OVERLAP"});
 
     if ($ok) {
         $written = unpack("L", $got_p);
@@ -1535,10 +1642,10 @@ sub read_done {
     my $wanted = 0;
     $self->{"_R_BUSY"} = 1;
 
-    $ov=$GetOverlappedResult->Call(	$self->{"_HANDLE"},
-			  		$self->{"_R_OVERLAP"},
-			  		$got_p,
-					$wait);
+    $ov=GetOverlappedResult( $self->{"_HANDLE"},
+			     $self->{"_R_OVERLAP"},
+			     $got_p,
+			     $wait);
     if ($ov) {
         $wanted = unpack("L", $got_p);
 	$self->{"_R_BUSY"} = 0;
@@ -1557,10 +1664,10 @@ sub write_done {
     my $written = 0;
     $self->{"_W_BUSY"} = 1;
 
-    $ov=$GetOverlappedResult->Call(	$self->{"_HANDLE"},
-			  		$self->{"_W_OVERLAP"},
-			  		$got_p,
-					$wait);
+    $ov=GetOverlappedResult( $self->{"_HANDLE"},
+			     $self->{"_W_OVERLAP"},
+			     $got_p,
+			     $wait);
     if ($ov) {
         $written = unpack("L", $got_p);
 	$self->{"_W_BUSY"} = 0;
@@ -1575,8 +1682,9 @@ sub purge_all {
     return if (@_);
 
     # PURGE_TXABORT | PURGE_RXABORT | PURGE_TXCLEAR | PURGE_RXCLEAR
-    unless ( $PurgeComm->Call($self->{"_HANDLE"}, 0x0000000f) ) {
+    unless ( PurgeComm($self->{"_HANDLE"}, 0x0000000f) ) {
         carp "Error in PurgeComm";
+        OS_Error;
 	return;
     }
     $self->{"_R_BUSY"} = 0;
@@ -1589,7 +1697,8 @@ sub purge_rx {
     return if (@_);
 
     # PURGE_RXABORT | PURGE_RXCLEAR
-    unless ( $PurgeComm->Call($self->{"_HANDLE"}, 0x0000000a) ) {
+    unless ( PurgeComm($self->{"_HANDLE"}, 0x0000000a) ) {
+        OS_Error;
         carp "Error in PurgeComm";
 	return;
     }
@@ -1602,7 +1711,8 @@ sub purge_tx {
     return if (@_);
 
     # PURGE_TXABORT | PURGE_TXCLEAR
-    unless ( $PurgeComm->Call($self->{"_HANDLE"}, 0x00000005) ) {
+    unless ( PurgeComm($self->{"_HANDLE"}, 0x00000005) ) {
+        OS_Error;
         carp "Error in PurgeComm";
 	return;
     }
@@ -1625,20 +1735,20 @@ sub buffer_max {
 sub suspend_tx {
     my $self = shift;
     return if (@_);
-    return $SetCommBreak->Call($self->{"_HANDLE"});
+    return SetCommBreak($self->{"_HANDLE"});
 }
 
 sub resume_tx {
     my $self = shift;
     return if (@_);
-    return $ClearCommBreak->Call($self->{"_HANDLE"});
+    return ClearCommBreak($self->{"_HANDLE"});
 }
 
 sub xmit_imm_char {
     my $self = shift;
     return unless (@_ == 1);
     my $v = int shift;
-    unless ( $TransmitCommChar->Call($self->{"_HANDLE"}, $v) ) {
+    unless ( TransmitCommChar($self->{"_HANDLE"}, $v) ) {
 	carp "Can't transmit char: $v";
 	return;
     }
@@ -1803,8 +1913,7 @@ sub is_write_char_time {
 sub update_timeouts {
     return unless (@_ == 1);
     my $self = shift;
-    unless ( $GetCommTimeouts->Call($self->{"_HANDLE"},
-				    $self->{"_TIMEOUT"}) ) {
+    unless ( GetCommTimeouts($self->{"_HANDLE"}, $self->{"_TIMEOUT"}) ) {
         carp "Error in GetCommTimeouts";
         return;
     }
@@ -1852,8 +1961,9 @@ sub update_timeouts {
 		               $self->{WTOT},
 		               $self->{WCONST});
 
-    if ( $SetCommTimeouts->Call($self->{"_HANDLE"},
-				$self->{"_TIMEOUT"}) ) { return 1; }
+    if ( SetCommTimeouts($self->{"_HANDLE"}, $self->{"_TIMEOUT"}) ) {
+	return 1;
+    }
     else {
         carp "Error in SetCommTimeouts";
         return;
@@ -1878,12 +1988,12 @@ sub is_binary {
 
 sub is_parity_enable {
     my $self = shift;
-    if (@_ and can_parity_enable($self)) {
+    if (@_) {
         $self->{"_N_PARITY_EN"} = 1 + yes_true ( shift );
         update_DCB ($self);
     }
     else {
-        return unless (fetch_DCB ($self));
+        return unless fetch_DCB ($self);
     }
     ### printf "_BitMask=%lx\n", $self->{"_BitMask"}; ###
     return ($self->{"_BitMask"} & FM_fParity);
@@ -1893,7 +2003,7 @@ sub dtr_active {
     return unless (@_ == 2);
     my $self = shift;
     my $onoff = yes_true ( shift ) ? SETDTR : CLRDTR ;
-    my $ok = $EscapeCommFunction->Call($self->{"_HANDLE"}, $onoff);
+    my $ok = EscapeCommFunction($self->{"_HANDLE"}, $onoff);
     return wantarray ? @binary_opt : $ok;
 }
 
@@ -1901,7 +2011,7 @@ sub rts_active {
     return unless (@_ == 2);
     my $self = shift;
     my $onoff = yes_true ( shift ) ? SETRTS : CLRRTS ;
-    my $ok = $EscapeCommFunction->Call($self->{"_HANDLE"}, $onoff);
+    my $ok = EscapeCommFunction($self->{"_HANDLE"}, $onoff);
     return wantarray ? @binary_opt : $ok;
 }
 
@@ -1909,27 +2019,27 @@ sub break_active {
     return unless (@_ == 2);
     my $self = shift;
     my $onoff = yes_true ( shift ) ? SETBREAK : CLRBREAK ;
-    my $ok = $EscapeCommFunction->Call($self->{"_HANDLE"}, $onoff);
+    my $ok = EscapeCommFunction($self->{"_HANDLE"}, $onoff);
     return wantarray ? @binary_opt : $ok;
 }
 
 sub xon_active {
     return unless (@_ == 1);
     my $self = shift;
-    return $EscapeCommFunction->Call($self->{"_HANDLE"}, SETXON);
+    return EscapeCommFunction($self->{"_HANDLE"}, SETXON);
 }
 
 sub xoff_active {
     return unless (@_ == 1);
     my $self = shift;
-    return $EscapeCommFunction->Call($self->{"_HANDLE"}, SETXOFF);
+    return EscapeCommFunction($self->{"_HANDLE"}, SETXOFF);
 }
 
 sub is_modemlines {
     return unless (@_ == 1);
     my $self = shift;
     my $mstat = " " x4;
-    unless ( $GetCommModemStatus->Call($self->{"_HANDLE"}, $mstat) ) {
+    unless ( GetCommModemStatus($self->{"_HANDLE"}, $mstat) ) {
         carp "Error in GetCommModemStatus";
         return;
     }
@@ -1968,18 +2078,18 @@ sub close {
     if ($self->{"_HANDLE"}) {
         purge_all ($self);
         update_timeouts ($self);			# if any running ??
-        $ok=$CloseHandle->Call($self->{"_HANDLE"});
+        $ok=CloseHandle($self->{"_HANDLE"});
         if ($Babble) {
             print "Closing handle $self->{\"_HANDLE\"} for $self->{NAME}\n";
         }
         $self->{"_HANDLE"} = undef;
     }
     if ($self->{"_R_EVENT"}) {
-        $ok=$CloseHandle->Call($self->{"_R_EVENT"});
+        $ok=CloseHandle($self->{"_R_EVENT"});
         $self->{"_R_EVENT"} = undef;
     }
     if ($self->{"_W_EVENT"}) {
-        $ok=$CloseHandle->Call($self->{"_W_EVENT"});
+        $ok=CloseHandle($self->{"_W_EVENT"});
         $self->{"_W_EVENT"} = undef;
     }
     # Microsoft samples never check the result either!
@@ -2014,7 +2124,7 @@ Win32API::CommPort - Raw Win32 system API calls for serial communications.
 
   use Win32;
   require 5.003;
-  use Win32API::CommPort qw( :STAT 0.10 );
+  use Win32API::CommPort qw( :STAT 0.12 );
 
   ## when available ##  use Win32API::File 0.05 qw( :ALL );
 
@@ -2032,11 +2142,11 @@ Win32API::CommPort - Raw Win32 system API calls for serial communications.
   set_no_messages;			# test suite use
   nocarp || carp "Something fishy";
 
-  $a = SHORTsize;
-  $a = LONGsize;
-  $answer = Yes_true("choice");
+  $a = SHORTsize;			# 0xffff
+  $a = LONGsize;			# 0xffffffff
+  $answer = Yes_true("choice");		# 1 or 0
 
-  OS_Error unless ($API_Call_OK);
+  OS_Error unless ($API_Call_OK);	# prints error
 
   $PortObj->init_done  || die "Not done";
 
@@ -2191,7 +2301,7 @@ internal variable exists for each I<$item> in the input list. The
 I<_N_$item> is created for each parameter that is set either directly
 or by default. A derived class must create the I<_N_$items> for any
 varibles it adds to the base class if it wants B<initialize> to check
-them. Win32API::Comm supports the following:
+them. Win32API::CommPort supports the following:
 
 	$item		_N_$item	    setting method
 	------		---------	    --------------
@@ -2307,8 +2417,8 @@ the return value of the setting method to check "success".
 
 =head2 Exports
 
-Nothing is exported by default.  Nothing is currently exported. The
-following tags can be used to have large sets of symbols exported:
+Nothing is exported by default. The following tags can be used to have
+large sets of symbols exported:
 
 =over 4
 
@@ -2342,64 +2452,63 @@ Offsets into the array returned by B<status:>
 
 =item :RAW
 
-The constants and objects for low-level API calls. These are likely to
-change with testing. Some may be inherited from Win32API::File when that
-becomes available.
+The constants and wrapper methods for low-level API calls. Details of
+these methods may change with testing. Some may be inherited from
+Win32API::File when that becomes available.
 
-  $result=$ClearCommError->Call($handle, $Error_BitMask_p, $CommStatus);
-  $result=$ClearCommBreak->Call($handle);
-  $result=$SetCommBreak->Call($handle);
-  $result=$GetCommModemStatus->Call($handle, $ModemStatus);
-  $result=$GetCommProperties->Call($handle, $CommProperties);
-  $result=$GetCommState->Call($handle, $DCB_Buffer);
-  $result=$SetCommState->Call($handle, $DCB_Buffer);
-  $result=$SetupComm->Call($handle, $in_buf_size, $out_buf_size);
-  $result=$ReadFile->Call($handle, $buffer, $wanted, $got, $template);
-  $result=$WriteFile->Call($handle, $buffer, $size, $count, $template);
-  $error=$GetLocalError->Call();
+  $result=ClearCommError($handle, $Error_BitMask_p, $CommStatus);
+  $result=ClearCommBreak($handle);
+  $result=SetCommBreak($handle);
+  $result=GetCommModemStatus($handle, $ModemStatus);
+  $result=GetCommProperties($handle, $CommProperties);
+  $result=GetCommState($handle, $DCB_Buffer);
+  $result=SetCommState($handle, $DCB_Buffer);
+  $result=SetupComm($handle, $in_buf_size, $out_buf_size);
+  $result=ReadFile($handle, $buffer, $wanted, $got, $template);
+  $result=WriteFile($handle, $buffer, $size, $count, $template);
 
-  $result=$GetCommTimeouts->Call($handle, $CommTimeOuts);
-  $result=$SetCommTimeouts->Call($handle, $CommTimeOuts);
-  $result=$EscapeCommFunction->Call($handle, $Func_ID);
-  $result=$GetCommConfig->Call($handle, $CommConfig, $Size);
-  $result=$SetCommConfig->Call($handle, $CommConfig, $Size);
-  $result=$PurgeComm->Call($handle, $flags);
+  $result=GetCommTimeouts($handle, $CommTimeOuts);
+  $result=SetCommTimeouts($handle, $CommTimeOuts);
+  $result=EscapeCommFunction($handle, $Func_ID);
+  $result=GetCommConfig($handle, $CommConfig, $Size);
+  $result=SetCommConfig($handle, $CommConfig, $Size);
+  $result=PurgeComm($handle, $flags);
 
-  $result=$GetCommMask->Call($handle, $Event_Bitmask);
-  $result=$SetCommMask->Call($handle, $Event_Bitmask);
-  $hEvent=$CreateEvent->Call($security, $reset_req, $initial, $name);
-  $handle=$CreateFile->Call($file, $access, $share, $security,
-                            $creation, $flags, $template);
-  $result=$CloseHandle->Call($handle);
-  $result=$ResetEvent->Call($hEvent);
-  $result=$TransmitCommChar->Call($handle, $char);
-  $result=$WaitCommEvent->Call($handle, $Event_Bitmask, $lpOverlapped);
-  $result=$GetOverlappedResult->Call($handle, $lpOverlapped, $count, $bool);
+  $result=GetCommMask($handle, $Event_Bitmask);
+  $result=SetCommMask($handle, $Event_Bitmask);
+  $hEvent=CreateEvent($security, $reset_req, $initial, $name);
+  $handle=CreateFile($file, $access, $share, $security,
+                     $creation, $flags, $template);
+  $result=CloseHandle($handle);
+  $result=ResetEvent($hEvent);
+  $result=TransmitCommChar($handle, $char);
+  $result=WaitCommEvent($handle, $Event_Bitmask, $lpOverlapped);
+  $result=GetOverlappedResult($handle, $lpOverlapped, $count, $bool);
 
-Flags used by B<$PurgeComm:>
+Flags used by B<PurgeComm:>
 
 	PURGE_TXABORT	PURGE_RXABORT	PURGE_TXCLEAR	PURGE_RXCLEAR
 
-Function IDs used by $EscapeCommFunction:
+Function IDs used by EscapeCommFunction:
 
 	SETXOFF		SETXON		SETRTS		CLRRTS
 	SETDTR		CLRDTR		SETBREAK	CLRBREAK
 
-Events used by B<$WaitCommEvent:>
+Events used by B<WaitCommEvent:>
 
 	EV_RXCHAR	EV_RXFLAG	EV_TXEMPTY	EV_CTS
 	EV_DSR		EV_RLSD		EV_BREAK	EV_ERR
 	EV_RING		EV_PERR		EV_RX80FULL	EV_EVENT1
 	EV_EVENT2
 
-Errors specific to B<$GetOverlappedResult:>
+Errors specific to B<GetOverlappedResult:>
 
 	ERROR_IO_INCOMPLETE	ERROR_IO_PENDING
 
 =item :COMMPROP
 
-The constants for the I<$CommProperties structure> returned by
-B<$GetCommProperties>. Included mostly for completeness.
+The constants for the I<CommProperties structure> returned by
+B<GetCommProperties>. Included mostly for completeness.
 
 	BAUD_USER	BAUD_075	BAUD_110	BAUD_134_5
 	BAUD_150	BAUD_300	BAUD_600	BAUD_1200
@@ -2432,8 +2541,8 @@ B<$GetCommProperties>. Included mostly for completeness.
 
 =item :DCB
 
-The constants for the I<Device Control Block> returned by B<$GetCommState>
-and updated by B<$SetCommState>. Again, included mostly for completeness.
+The constants for the I<Device Control Block> returned by B<GetCommState>
+and updated by B<SetCommState>. Again, included mostly for completeness.
 But there are some combinations of "FM_f" settings which are not currrently
 supported by high-level commands. If you need one of those, please report
 the lack as a bug.
@@ -2476,7 +2585,7 @@ An important note about Win32 filenames. The reserved device names such
 as C< COM1, AUX, LPT1, CON, PRN > can NOT be used as filenames. Hence
 I<"COM2.cfg"> would not be usable for B<$Configuration_File_Name>.
 
-This module uses Win32API extensively. The raw API calls are B<very>
+This module uses Win32::API extensively. The raw API calls are B<very>
 unforgiving. You will certainly want to start perl with the B<-w> switch.
 If you can, B<use strict> as well. Try to ferret out all the syntax and
 usage problems BEFORE issuing the API calls (many of which modify tuning
@@ -2554,7 +2663,8 @@ Write_total = B<is_write_const_time> + (B<is_write_char_time> * bytes_to_write)
 
 ActiveState ports of Perl for Win32 before build 500 do not support the
 tools for building extensions and so will not support later versions of
-this extension. 
+this extension. In particular, the automated install and test scripts in
+this distribution do not work with ActiveState builds 3xx.
 
 There is no parameter checking on the "raw" API calls. You probably should
 be familiar with using the calls in "C" before doing much experimenting.
@@ -2596,11 +2706,15 @@ Copyright (C) 1998, Bill Birthisel. All rights reserved.
 This module is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-=head2 DISCLAIMER
+=head2 COMPATIBILITY
 
 This is still Beta code and may be subject to functional changes which
-are not fully backwards compatible.  This module is B<NOT> ready
-for production use. Consider the lack of an I<Install> program to be a
-feature and run in a "standalone" directory. 29 Aug 1998.
+are not fully backwards compatible. This version (0.12) adds an
+I<Install.PL> script to put modules into the documented Namespaces.
+The script uses I<MakeMaker> tools not available in ActiveState 3xx
+builds. Users of those builds will need to install manually (see README).
+Some of the optional exports (those under the "RAW:" tag) have been
+renamed in this version. I do not know of any scripts outside the test
+suite which will be affected. 8 Nov 1998.
 
 =cut

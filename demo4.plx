@@ -4,7 +4,7 @@
 
 BEGIN { $| = 1; print "demo4.plx "; }
 END {print "not ok\n" unless $loaded;}
-use SerialPort 0.09;
+use Win32::SerialPort 0.09;
 $loaded = 1;
 print "ok\n";
 
@@ -16,7 +16,7 @@ my $ob;
 
 # Constructor
 
-unless ($ob = SerialPort->new ('com1')) {
+unless ($ob = Win32::SerialPort->new ('com1')) {
     printf "could not open port COM1\n";
     exit 1;
     # next test would die at runtime without $ob

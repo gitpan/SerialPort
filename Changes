@@ -63,3 +63,29 @@ Revision history for Perl extension Win32API::SerialPort.
 	- Add :RAW :COMPROP :PARAM :DCB :ALL exports to CommPort.pm
 	- Add $ResetEvent to CommPort.pm
 	- Fix a number of timing bugs
+
+0.11  Mon Sep 14 23:40:00 1998
+	- Add current baud to ok list
+	- add error messages
+	- allow set_write_buf(0)
+	- limited release to test TPJ examples and bug fixes
+
+0.12  Sun Nov 08 23:40:00 1998
+	- MAJOR UPDATE - Second public beta
+	- Modify CommPort.pm to export subroutine wrappers instead of
+	  API objects under tag "RAW:". Many related changes in test5.t
+	- Add perl version test to Makefile.PL
+	- Add Install.PL and blib subdirectory tree (5.004 and above)
+	- Add options.plx to aid in debugging after installation
+	- Update MANIFEST, README and documentation
+	- Add error messages for failed "save" and "write_settings" 
+	- Fix bugs in range checking for "baudrate" and "buffers"
+	- Rename API objects to "$_object"
+	- Delete $_GetLocalError
+	- Use "my $dcb" instead of $self->{"_DCB"} in CommPort.pm
+	- Move test suite files to "t" subirectory (5.004 and above)
+	- Add "use blib" to the test suite
+	- Revise demo*.plx to use proper Namespaces
+	- Create "Build_3xx" subdirectory for non-Makamaker test suite
+	- Add manual install instructions for ActiveState build 3xx
+

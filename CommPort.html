@@ -38,7 +38,7 @@
 	<LI><A HREF="#COPYRIGHT">COPYRIGHT</A>
 	<UL>
 
-		<LI><A HREF="#DISCLAIMER">DISCLAIMER</A>
+		<LI><A HREF="#COMPATIBILITY">COMPATIBILITY</A>
 	</UL>
 
 </UL>
@@ -62,7 +62,7 @@ Win32API::CommPort - Raw Win32 system API calls for serial communications.
 </A></H1>
 <PRE>  use Win32;
   require 5.003;
-  use Win32API::CommPort qw( :STAT 0.10 );
+  use Win32API::CommPort qw( :STAT 0.12 );
 </PRE>
 
 <P>
@@ -101,14 +101,14 @@ Win32API::CommPort - Raw Win32 system API calls for serial communications.
 
 <P>
 
-<PRE>  $a = SHORTsize;
-  $a = LONGsize;
-  $answer = Yes_true(&quot;choice&quot;);
+<PRE>  $a = SHORTsize;                       # 0xffff
+  $a = LONGsize;                        # 0xffffffff
+  $answer = Yes_true(&quot;choice&quot;);         # 1 or 0
 </PRE>
 
 <P>
 
-<PRE>  OS_Error unless ($API_Call_OK);
+<PRE>  OS_Error unless ($API_Call_OK);       # prints error
 </PRE>
 
 <P>
@@ -352,7 +352,7 @@ binary transfers. A separate <CODE>binmode</CODE> is not needed. The USER must r
 The fault checking in <STRONG>initialize</STRONG> consists in verifying an <EM>_N_$item</EM>
 internal variable exists for each <EM>$item</EM> in the input list. The
 <EM>_N_$item</EM> is created for each parameter that is set either directly or by default. A
-derived class must create the <EM>_N_$items</EM> for any varibles it adds to the base class if it wants <STRONG>initialize</STRONG> to check them. Win32API::Comm supports the following:
+derived class must create the <EM>_N_$items</EM> for any varibles it adds to the base class if it wants <STRONG>initialize</STRONG> to check them. Win32API::CommPort supports the following:
 
 
 <P>
@@ -518,8 +518,8 @@ value of the setting method to check ``success''.
 <H2><A NAME="Exports">Exports
 
 </A></H2>
-Nothing is exported by default. Nothing is currently exported. The
-following tags can be used to have large sets of symbols exported:
+Nothing is exported by default. The following tags can be used to have
+large sets of symbols exported:
 
 
 <P>
@@ -590,53 +590,52 @@ Offsets into the array returned by <STRONG>status:</STRONG>
 <DT><STRONG><A NAME="item__RAW">:RAW
 
 </A></STRONG><DD>
-The constants and objects for low-level API calls. These are likely to
-change with testing. Some may be inherited from Win32API::File when that
-becomes available.
+The constants and wrapper methods for low-level API calls. Details of these
+methods may change with testing. Some may be inherited from Win32API::File
+when that becomes available.
 
 
 <P>
 
-<PRE>  $result=$ClearCommError-&gt;Call($handle, $Error_BitMask_p, $CommStatus);
-  $result=$ClearCommBreak-&gt;Call($handle);
-  $result=$SetCommBreak-&gt;Call($handle);
-  $result=$GetCommModemStatus-&gt;Call($handle, $ModemStatus);
-  $result=$GetCommProperties-&gt;Call($handle, $CommProperties);
-  $result=$GetCommState-&gt;Call($handle, $DCB_Buffer);
-  $result=$SetCommState-&gt;Call($handle, $DCB_Buffer);
-  $result=$SetupComm-&gt;Call($handle, $in_buf_size, $out_buf_size);
-  $result=$ReadFile-&gt;Call($handle, $buffer, $wanted, $got, $template);
-  $result=$WriteFile-&gt;Call($handle, $buffer, $size, $count, $template);
-  $error=$GetLocalError-&gt;Call();
+<PRE>  $result=ClearCommError($handle, $Error_BitMask_p, $CommStatus);
+  $result=ClearCommBreak($handle);
+  $result=SetCommBreak($handle);
+  $result=GetCommModemStatus($handle, $ModemStatus);
+  $result=GetCommProperties($handle, $CommProperties);
+  $result=GetCommState($handle, $DCB_Buffer);
+  $result=SetCommState($handle, $DCB_Buffer);
+  $result=SetupComm($handle, $in_buf_size, $out_buf_size);
+  $result=ReadFile($handle, $buffer, $wanted, $got, $template);
+  $result=WriteFile($handle, $buffer, $size, $count, $template);
 </PRE>
 
 <P>
 
-<PRE>  $result=$GetCommTimeouts-&gt;Call($handle, $CommTimeOuts);
-  $result=$SetCommTimeouts-&gt;Call($handle, $CommTimeOuts);
-  $result=$EscapeCommFunction-&gt;Call($handle, $Func_ID);
-  $result=$GetCommConfig-&gt;Call($handle, $CommConfig, $Size);
-  $result=$SetCommConfig-&gt;Call($handle, $CommConfig, $Size);
-  $result=$PurgeComm-&gt;Call($handle, $flags);
+<PRE>  $result=GetCommTimeouts($handle, $CommTimeOuts);
+  $result=SetCommTimeouts($handle, $CommTimeOuts);
+  $result=EscapeCommFunction($handle, $Func_ID);
+  $result=GetCommConfig($handle, $CommConfig, $Size);
+  $result=SetCommConfig($handle, $CommConfig, $Size);
+  $result=PurgeComm($handle, $flags);
 </PRE>
 
 <P>
 
-<PRE>  $result=$GetCommMask-&gt;Call($handle, $Event_Bitmask);
-  $result=$SetCommMask-&gt;Call($handle, $Event_Bitmask);
-  $hEvent=$CreateEvent-&gt;Call($security, $reset_req, $initial, $name);
-  $handle=$CreateFile-&gt;Call($file, $access, $share, $security,
-                            $creation, $flags, $template);
-  $result=$CloseHandle-&gt;Call($handle);
-  $result=$ResetEvent-&gt;Call($hEvent);
-  $result=$TransmitCommChar-&gt;Call($handle, $char);
-  $result=$WaitCommEvent-&gt;Call($handle, $Event_Bitmask, $lpOverlapped);
-  $result=$GetOverlappedResult-&gt;Call($handle, $lpOverlapped, $count, $bool);
+<PRE>  $result=GetCommMask($handle, $Event_Bitmask);
+  $result=SetCommMask($handle, $Event_Bitmask);
+  $hEvent=CreateEvent($security, $reset_req, $initial, $name);
+  $handle=CreateFile($file, $access, $share, $security,
+                     $creation, $flags, $template);
+  $result=CloseHandle($handle);
+  $result=ResetEvent($hEvent);
+  $result=TransmitCommChar($handle, $char);
+  $result=WaitCommEvent($handle, $Event_Bitmask, $lpOverlapped);
+  $result=GetOverlappedResult($handle, $lpOverlapped, $count, $bool);
 </PRE>
 
 <P>
 
-Flags used by <STRONG>$PurgeComm:</STRONG>
+Flags used by <STRONG>PurgeComm:</STRONG>
 
 
 
@@ -648,7 +647,7 @@ Flags used by <STRONG>$PurgeComm:</STRONG>
 
 <P>
 
-Function IDs used by $EscapeCommFunction:
+Function IDs used by EscapeCommFunction:
 
 
 <P>
@@ -659,7 +658,7 @@ Function IDs used by $EscapeCommFunction:
 
 <P>
 
-Events used by <STRONG>$WaitCommEvent:</STRONG>
+Events used by <STRONG>WaitCommEvent:</STRONG>
 
 
 
@@ -674,7 +673,7 @@ Events used by <STRONG>$WaitCommEvent:</STRONG>
 
 <P>
 
-Errors specific to <STRONG>$GetOverlappedResult:</STRONG>
+Errors specific to <STRONG>GetOverlappedResult:</STRONG>
 
 
 
@@ -689,8 +688,8 @@ Errors specific to <STRONG>$GetOverlappedResult:</STRONG>
 <DT><STRONG><A NAME="item__COMMPROP">:COMMPROP
 
 </A></STRONG><DD>
-The constants for the <EM>$CommProperties structure</EM> returned by
-<STRONG>$GetCommProperties</STRONG>. Included mostly for completeness.
+The constants for the <EM>CommProperties structure</EM> returned by
+<STRONG>GetCommProperties</STRONG>. Included mostly for completeness.
 
 
 <P>
@@ -751,8 +750,8 @@ The constants for the <EM>$CommProperties structure</EM> returned by
 <DT><STRONG><A NAME="item__DCB">:DCB
 
 </A></STRONG><DD>
-The constants for the <EM>Device Control Block</EM> returned by <STRONG>$GetCommState</STRONG>
-and updated by <STRONG>$SetCommState</STRONG>. Again, included mostly for completeness. But there are some combinations
+The constants for the <EM>Device Control Block</EM> returned by <STRONG>GetCommState</STRONG>
+and updated by <STRONG>SetCommState</STRONG>. Again, included mostly for completeness. But there are some combinations
 of ``FM_f'' settings which are not currrently supported by high-level
 commands. If you need one of those, please report the lack as a bug.
 
@@ -828,7 +827,7 @@ An important note about Win32 filenames. The reserved device names such as <CODE
 
 <P>
 
-This module uses Win32API extensively. The raw API calls are <STRONG>very</STRONG>
+This module uses Win32::API extensively. The raw API calls are <STRONG>very</STRONG>
 unforgiving. You will certainly want to start perl with the <STRONG>-w</STRONG> switch. If you can, <STRONG>use strict</STRONG> as well. Try to ferret out all the syntax and usage problems BEFORE issuing
 the API calls (many of which modify tuning constants in hardware device
 drivers....not where you want to look for bugs).
@@ -946,7 +945,8 @@ Write_total = <STRONG>is_write_const_time</STRONG> + (<STRONG>is_write_char_time
 </A></H1>
 ActiveState ports of Perl for Win32 before build 500 do not support the
 tools for building extensions and so will not support later versions of
-this extension. 
+this extension. In particular, the automated install and test scripts in
+this distribution do not work with ActiveState builds 3xx.
 
 
 <P>
@@ -1049,11 +1049,15 @@ under the same terms as Perl itself.
 
 <P>
 <HR>
-<H2><A NAME="DISCLAIMER">DISCLAIMER
+<H2><A NAME="COMPATIBILITY">COMPATIBILITY
 
 </A></H2>
 This is still Beta code and may be subject to functional changes which are
-not fully backwards compatible. This module is <STRONG>NOT</STRONG> ready for production use. Consider the lack of an <EM>Install</EM> program to be a feature and run in a ``standalone'' directory. 29 Aug 1998.
+not fully backwards compatible. This version (0.12) adds an
+<EM>Install.PL</EM> script to put modules into the documented Namespaces. The script uses <EM>MakeMaker</EM> tools not available in ActiveState 3xx builds. Users of those builds will
+need to install manually (see README). Some of the optional exports (those
+under the ``RAW:'' tag) have been renamed in this version. I do not know of
+any scripts outside the test suite which will be affected. 8 Nov 1998.
 
 
 <P>

@@ -1,5 +1,6 @@
 #! perl -w
-package COM1test1;
+
+#### use blib '..';	#### needed unless running from ../Makefile.PL
 
 # Before `make install' is performed this script should be runnable with
 # `make test'. After `make install' it should work as `perl test?.t'
@@ -10,9 +11,9 @@ package COM1test1;
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..188\n"; }
+BEGIN { $| = 1; print "1..213\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use SerialPort 0.09;
+use AltPort qw( :STAT :PARAM 0.12 );		# check inheritance & export
 $loaded = 1;
 print "ok 1\n";
 
@@ -90,7 +91,7 @@ sub is_bad {
 }
 
 my $file = "COM1";
-my $cfgfile = $file."_test.cfg";
+my $cfgfile = "../".$file."_test.cfg";
 
 my $naptime = 0;	# pause between output pages
 if (@ARGV) {
@@ -114,49 +115,49 @@ my $e;
 my $tick;
 my $tock;
 my %required_param;
-my @necessary_param = SerialPort->set_test_mode_active;
+
+is_ok(0x0 == nocarp);				# 2
+my @necessary_param = AltPort->set_test_mode_active;
 
 unlink $cfgfile;
 foreach $e (@necessary_param) { $required_param{$e} = 0; }
 
 ## 2 - 5 SerialPort Global variable ($Babble);
 
-is_bad(scalar SerialPort->debug);		# 2: start out false
+is_bad(scalar AltPort->debug);			# 3: start out false
 
-is_ok(scalar SerialPort->debug(1));		# 3: set it
-
-is_bad(scalar SerialPort->debug(2));		# 4: invalid binary=false
+is_ok(scalar AltPort->debug(1));		# 4: set it
 
 # 5: yes_true subroutine, no need to SHOUT if it works
 
 $e="not ok $tc:";
-unless (SerialPort->debug("T"))   { print "$e \"T\"\n"; $fault++; }
-if     (SerialPort->debug("F"))   { print "$e \"F\"\n"; $fault++; }
+unless (AltPort->debug("T"))   { print "$e \"T\"\n"; $fault++; }
+if     (AltPort->debug("F"))   { print "$e \"F\"\n"; $fault++; }
 
 no strict 'subs';
-unless (SerialPort->debug(T))     { print "$e T\n";     $fault++; }
-if     (SerialPort->debug(F))     { print "$e F\n";     $fault++; }
-unless (SerialPort->debug(Y))     { print "$e Y\n";     $fault++; }
-if     (SerialPort->debug(N))     { print "$e N\n";     $fault++; }
-unless (SerialPort->debug(ON))    { print "$e ON\n";    $fault++; }
-if     (SerialPort->debug(OFF))   { print "$e OFF\n";   $fault++; }
-unless (SerialPort->debug(TRUE))  { print "$e TRUE\n";  $fault++; }
-if     (SerialPort->debug(FALSE)) { print "$e FALSE\n"; $fault++; }
-unless (SerialPort->debug(Yes))   { print "$e Yes\n";   $fault++; }
-if     (SerialPort->debug(No))    { print "$e No\n";    $fault++; }
-unless (SerialPort->debug("yes")) { print "$e \"yes\"\n"; $fault++; }
-if     (SerialPort->debug("f"))   { print "$e \"f\"\n";   $fault++; }
+unless (AltPort->debug(T))     { print "$e T\n";     $fault++; }
+if     (AltPort->debug(F))     { print "$e F\n";     $fault++; }
+unless (AltPort->debug(Y))     { print "$e Y\n";     $fault++; }
+if     (AltPort->debug(N))     { print "$e N\n";     $fault++; }
+unless (AltPort->debug(ON))    { print "$e ON\n";    $fault++; }
+if     (AltPort->debug(OFF))   { print "$e OFF\n";   $fault++; }
+unless (AltPort->debug(TRUE))  { print "$e TRUE\n";  $fault++; }
+if     (AltPort->debug(FALSE)) { print "$e FALSE\n"; $fault++; }
+unless (AltPort->debug(Yes))   { print "$e Yes\n";   $fault++; }
+if     (AltPort->debug(No))    { print "$e No\n";    $fault++; }
+unless (AltPort->debug("yes")) { print "$e \"yes\"\n"; $fault++; }
+if     (AltPort->debug("f"))   { print "$e \"f\"\n";   $fault++; }
 use strict 'subs';
 
 print "ok $tc\n" unless ($fault);
 $tc++;
 
-@opts = SerialPort->debug;		# 6: binary_opt array
+@opts = AltPort->debug;		# 6: binary_opt array
 is_ok(test_bin_list(@opts));
 
 # 7: Constructor
 
-unless (is_ok ($ob = SerialPort->new ($file))) {
+unless (is_ok ($ob = AltPort->new ($file))) {
     printf "could not open port $file\n";
     exit 1;
     # next test would die at runtime without $ob
@@ -231,19 +232,19 @@ is_ok(test_bin_list(@opts));			# 35
 ## 36 - 42: Unusual Parameters (for generic port)
 
 $fail=$ob->can_spec_char;			# 36
-printf (($fail ? "spec_char not generic but\n" : "")."ok %d\n",$tc++);
+printf (($fail ? "spec_char not generic but " : "")."ok %d\n",$tc++);
 @opts = $ob->can_spec_char;
 is_ok(test_bin_list(@opts));			# 37
 
 $fail=$ob->can_16bitmode;			# 38
-printf (($fail ? "16bitmode not generic but\n" : "")."ok %d\n",$tc++);
+printf (($fail ? "16bitmode not generic but " : "")."ok %d\n",$tc++);
 @opts = $ob->can_16bitmode;
 is_ok(test_bin_list(@opts));			# 39
 
 $pass=$ob->is_rs232;				# 40
 $in = $ob->is_modem;				# 40 alternate
 if ($pass)	{ printf ("ok %d\n", $tc++); }
-elsif ($in)	{ printf ("modem is\nok %d\n", $tc++); }
+elsif ($in)	{ printf ("modem is ok %d\n", $tc++); }
 else	 	{ printf ("not ok %d\n", $tc++); }
 
 @opts = $ob->is_rs232;
@@ -319,11 +320,11 @@ is_zero(scalar $ob->error_char(0x0));		# 62
 
 ## 63 - 68: Baud (Valid/Invalid/Current)
 
-@opts=$ob->baudrate;		# list of allowed values
+@opts=$ob->are_baudrate;		# list of allowed values
 is_ok(1 == grep(/^9600$/, @opts));		# 63
 is_zero(scalar grep(/^9601/, @opts));		# 64
 
-is_ok($in = $ob->baudrate);			# 65
+is_ok($in = $ob->is_baudrate);			# 65
 is_ok(1 == grep(/^$in$/, @opts));		# 66
 
 if ($naptime) {
@@ -331,22 +332,22 @@ if ($naptime) {
     sleep $naptime;
 }
 
-is_bad(scalar $ob->baudrate(9601));		# 67
-is_ok($in == $ob->baudrate(9600));		# 68
+is_bad(scalar $ob->is_baudrate(9601));		# 67
+is_ok($in == $ob->is_baudrate(9600));		# 68
     # leaves 9600 pending
 
 
 ## 69 - 74: Parity (Valid/Invalid/Current)
 
-@opts=$ob->parity;		# list of allowed values
+@opts=$ob->are_parity;		# list of allowed values
 is_ok(1 == grep(/none/, @opts));		# 69
 is_zero(scalar grep(/any/, @opts));		# 70
 
-is_ok($in = $ob->parity);			# 71
+is_ok($in = $ob->is_parity);			# 71
 is_ok(1 == grep(/^$in$/, @opts));		# 72
 
-is_bad(scalar $ob->parity("any"));		# 73
-is_ok($in eq $ob->parity("none"));		# 74
+is_bad(scalar $ob->is_parity("any"));		# 73
+is_ok($in eq $ob->is_parity("none"));		# 74
     # leaves "none" pending
 
 ## 75: Missing Param test
@@ -356,35 +357,35 @@ is_bad($ob->write_settings);			# 75
 
 ## 76 - 81: Databits (Valid/Invalid/Current)
 
-@opts=$ob->databits;		# list of allowed values
+@opts=$ob->are_databits;		# list of allowed values
 is_ok(1 == grep(/8/, @opts));			# 76
 is_zero(scalar grep(/4/, @opts));		# 77
 
-is_ok($in = $ob->databits);			# 78
+is_ok($in = $ob->is_databits);			# 78
 is_ok(1 == grep(/^$in$/, @opts));		# 79
 
-is_bad(scalar $ob->databits(3));		# 80
-is_ok($in == $ob->databits(8));			# 81
+is_bad(scalar $ob->is_databits(3));		# 80
+is_ok($in == $ob->is_databits(8));		# 81
     # leaves 8 pending
 
 
 ## 82 - 87: Stopbits (Valid/Invalid/Current)
 
-@opts=$ob->stopbits;		# list of allowed values
+@opts=$ob->are_stopbits;		# list of allowed values
 is_ok(1 == grep(/1.5/, @opts));			# 82
 is_zero(scalar grep(/3/, @opts));		# 83
 
-is_ok($in = $ob->stopbits);			# 84
+is_ok($in = $ob->is_stopbits);			# 84
 is_ok(1 == grep(/^$in$/, @opts));		# 85
 
-is_bad(scalar $ob->stopbits(3));		# 86
-is_ok($in == $ob->stopbits(1));			# 87
+is_bad(scalar $ob->is_stopbits(3));		# 86
+is_ok($in == $ob->is_stopbits(1));		# 87
     # leaves 1 pending
 
 
 ## 88 - 93: Handshake (Valid/Invalid/Current)
 
-@opts=$ob->handshake;		# list of allowed values
+@opts=$ob->are_handshake;		# list of allowed values
 is_ok(1 == grep(/none/, @opts));		# 88
 is_zero(scalar grep(/moo/, @opts));		# 89
 
@@ -393,11 +394,11 @@ if ($naptime) {
     sleep $naptime;
 }
 
-is_ok($in = $ob->handshake);			# 90
+is_ok($in = $ob->is_handshake);			# 90
 is_ok(1 == grep(/^$in$/, @opts));		# 91
 
-is_bad(scalar $ob->handshake("moo"));		# 92
-is_ok($in = $ob->handshake("rts"));		# 93
+is_bad(scalar $ob->is_handshake("moo"));	# 92
+is_ok($in = $ob->is_handshake("rts"));		# 93
     # leaves "rts" pending for status
 
 
@@ -424,7 +425,7 @@ is_ok($out == $err);				# 99
 
 ## 100: Alias
 
-is_ok("TestPort" eq $ob->alias("TestPort"));	# 100
+is_ok("AltPort" eq $ob->alias("AltPort"));	# 100
 
 
 ## 101 - 106: Read Timeouts
@@ -481,53 +482,71 @@ is_ok(100 == $ob->xon_limit(100));		# 118
 is_ok(200 == $ob->xoff_limit(200));		# 119
 
 
-## 120 - 130: Constants from Package
+## 120 - 147: Constants from Package
 
-is_ok(1 == $ob->BM_fCtsHold);			# 120
-is_ok(2 == $ob->BM_fDsrHold);			# 121
-is_ok(4 == $ob->BM_fRlsdHold);			# 122
-is_ok(8 == $ob->BM_fXoffHold);			# 123
-is_ok(0x10 == $ob->BM_fXoffSent);		# 124
-is_ok(0x20 == $ob->BM_fEof);			# 125
-is_ok(0x40 == $ob->BM_fTxim);			# 126
+no strict 'subs';
+is_ok(1 == BM_fCtsHold);			# 120
+is_ok(2 == BM_fDsrHold);			# 121
+is_ok(4 == BM_fRlsdHold);			# 122
+is_ok(8 == BM_fXoffHold);			# 123
+is_ok(0x10 == BM_fXoffSent);			# 124
+is_ok(0x20 == BM_fEof);				# 125
+is_ok(0x40 == BM_fTxim);			# 126
+is_ok(0x7f == BM_AllBits);			# 127
 
-is_ok(0x10 == $ob->MS_CTS_ON);			# 127
-is_ok(0x20 == $ob->MS_DSR_ON);			# 128
-is_ok(0x40 == $ob->MS_RING_ON);			# 129
-is_ok(0x80 == $ob->MS_RLSD_ON);			# 130
-
-is_ok(0x1 == $ob->CE_RXOVER);			# 131
-is_ok(0x2 == $ob->CE_OVERRUN);			# 132
+is_ok(0x10 == MS_CTS_ON);			# 128
+is_ok(0x20 == MS_DSR_ON);			# 129
+is_ok(0x40 == MS_RING_ON);			# 130
+is_ok(0x80 == MS_RLSD_ON);			# 131
 
 if ($naptime) {
     print "++++ page break\n";
     sleep $naptime;
 }
 
-is_ok(0x4 == $ob->CE_RXPARITY);			# 133
-is_ok(0x8 == $ob->CE_FRAME);			# 134
-is_ok(0x10 == $ob->CE_BREAK);			# 135
-is_ok(0x100 == $ob->CE_TXFULL);			# 136
-is_ok(0x8000 == $ob->CE_MODE);			# 137
+is_ok(0x1 == CE_RXOVER);			# 132
+is_ok(0x2 == CE_OVERRUN);			# 133
+is_ok(0x4 == CE_RXPARITY);			# 134
+is_ok(0x8 == CE_FRAME);				# 135
+is_ok(0x10 == CE_BREAK);			# 136
+is_ok(0x100 == CE_TXFULL);			# 137
+is_ok(0x8000 == CE_MODE);			# 138
+
+is_ok(0x0 == ST_BLOCK);				# 139
+is_ok(0x1 == ST_INPUT);				# 140
+is_ok(0x2 == ST_OUTPUT);			# 141
+is_ok(0x3 == ST_ERROR);				# 142
+
+is_ok(0xffffffff == LONGsize);			# 143
+is_ok(0xffff == SHORTsize);			# 144
+is_ok(0x1 == nocarp);				# 145
+is_ok(0x0 == yes_true("F"));			# 146
+is_ok(0x1 == yes_true("T"));			# 147
+use strict 'subs';
 
 ## 138 - 143: Status
 
 @opts = $ob->status;
-is_ok(defined @opts);				# 138
+is_ok(defined @opts);				# 148
 
 # for an unconnected port, should be $in=0, $out=0, $blk=1 (no CTS), $err=0
 
 ($blk, $in, $out, $err)=@opts;
-is_ok(defined $blk);				# 139
-is_zero($in);					# 140
-is_zero($out);					# 141
+is_ok(defined $blk);				# 149
+is_zero($in);					# 150
+is_zero($out);					# 151
 
-is_ok($blk == $ob->BM_fCtsHold);		# 142
-is_zero($err);					# 143
+is_ok($blk == $ob->BM_fCtsHold);		# 152
+is_zero($err);					# 153
 
-## 144 - 103: No Handshake, Polled Write
+if ($naptime) {
+    print "++++ page break\n";
+    sleep $naptime;
+}
 
-is_ok("none" eq $ob->handshake("none"));	# 144
+## 154 - 160: No Handshake, Polled Write
+
+is_ok("none" eq $ob->handshake("none"));	# 154
 
 $e="testing is a wonderful thing - this is a 60 byte long string";
 #   123456789012345678901234567890123456789012345678901234567890
@@ -537,109 +556,131 @@ $tick=Win32::GetTickCount();
 $pass=$ob->write($out);
 $tock=Win32::GetTickCount();
 
-is_ok($pass == 180);				# 145
+is_ok($pass == 180);				# 155
 $err=$tock - $tick;
-is_bad (($err < 160) or ($err > 210));		# 146
+is_bad (($err < 160) or ($err > 210));		# 156
 print "<185> elapsed time=$err\n";
 
 ($blk, $in, $out, $err)=$ob->status;
-is_zero($blk);					# 147
+is_zero($blk);					# 157
 if ($blk) { printf "status: blk=%lx\n", $blk; }
-is_zero($in);					# 148
-is_zero($out);					# 149
-is_zero($err);					# 150
+is_zero($in);					# 158
+is_zero($out);					# 159
+is_zero($err);					# 160
 
-## 151 - 156: Block by DSR without Output
+## 161 - 166: Block by DSR without Output
 
-is_ok(scalar $ob->purge_tx);			# 151
-is_ok("dtr" eq $ob->handshake("dtr"));		# 152
+is_ok(scalar $ob->purge_tx);			# 161
+is_ok("dtr" eq $ob->handshake("dtr"));		# 162
+
+($blk, $in, $out, $err)=$ob->status;
+is_ok($blk == $ob->BM_fDsrHold);		# 163
+is_zero($in);					# 164
+is_zero($out);					# 165
+is_zero($err);					# 166
+
+## 167 - 171: Unsent XOFF without Output
+
+is_ok("xoff" eq $ob->handshake("xoff"));	# 167
+
+($blk, $in, $out, $err)=$ob->status;
+is_zero($blk);					# 168
+if ($blk) { printf "status: blk=%lx\n", $blk; }
+is_zero($in);					# 169
+is_zero($out);					# 170
+is_zero($err);					# 171
+
+## 172 - 180: Block by XOFF without Output
+
+is_ok(scalar $ob->xoff_active);			# 172
+
+is_ok(scalar $ob->xmit_imm_char(0x33));		# 173
 
 if ($naptime) {
     print "++++ page break\n";
     sleep $naptime;
 }
-
-($blk, $in, $out, $err)=$ob->status;
-is_ok($blk == $ob->BM_fDsrHold);		# 153
-is_zero($in);					# 154
-is_zero($out);					# 155
-is_zero($err);					# 156
-
-## 157 - 161: Unsent XOFF without Output
-
-is_ok("xoff" eq $ob->handshake("xoff"));	# 157
-
-($blk, $in, $out, $err)=$ob->status;
-is_zero($blk);					# 158
-if ($blk) { printf "status: blk=%lx\n", $blk; }
-is_zero($in);					# 159
-is_zero($out);					# 160
-is_zero($err);					# 161
-
-## 162 - 170: Block by XOFF without Output
-
-is_ok(scalar $ob->xoff_active);			# 162
-
-is_ok(scalar $ob->transmit_char(0x33));		# 163
 
 $in2=($ob->BM_fXoffHold | $ob->BM_fTxim);
 ($blk, $in, $out, $err)=$ob->status;
-is_ok($blk & $in2);				# 164
-is_zero($in);					# 165
-is_zero($out);					# 166
-is_zero($err);					# 167
+is_ok($blk & $in2);				# 174
+is_zero($in);					# 175
+is_zero($out);					# 176
+is_zero($err);					# 177
 
-is_ok(scalar $ob->xon_active);			# 168
+is_ok(scalar $ob->xon_active);			# 178
 ($blk, $in, $out, $err)=$ob->status;
-is_zero($blk);					# 169
+is_zero($blk);					# 179
 if ($blk) { printf "status: blk=%lx\n", $blk; }
-is_zero($err);					# 170
+is_zero($err);					# 180
+
+## 181 - 182: No Handshake
+
+is_ok("none" eq $ob->handshake("none"));	# 181
+is_ok(scalar $ob->purge_all);			# 182
+
+## 183 - 188: Optional Messages
+
+@opts = $ob->user_msg;
+is_ok(test_bin_list(@opts));			# 183
+is_zero(scalar $ob->user_msg);			# 184
+is_ok(1 == $ob->user_msg(1));			# 185
+
+@opts = $ob->error_msg;
+is_ok(test_bin_list(@opts));			# 186
+is_zero(scalar $ob->error_msg);			# 187
+is_ok(1 == $ob->error_msg(1));			# 188
+
+## 189 - 193: Save and Check Configuration
+
+is_ok(scalar $ob->save($cfgfile));		# 189
+
+is_ok(9600 == $ob->baudrate);			# 190
+is_ok("none" eq $ob->parity);			# 191
+is_ok(8 == $ob->databits);			# 192
+is_ok(1 == $ob->stopbits);			# 193
 
 if ($naptime) {
     print "++++ page break\n";
     sleep $naptime;
 }
 
-## 171 - 172: No Handshake
+## 194 - 206: Other Misc. Tests
 
-is_ok("none" eq $ob->handshake("none"));	# 171
-is_ok(scalar $ob->purge_all);			# 172
+is_ok(scalar $ob->can_rlsd_config);		# 194
+@opts = $ob->can_rlsd_config;
+is_ok(test_bin_list(@opts));			# 195
 
-## 173 - 178: Optional Messages
+is_ok($ob->suspend_tx);				# 196
+is_ok(scalar $ob->dtr_active(1));			# 197
+is_ok(scalar $ob->rts_active(1));			# 198
+is_ok(scalar $ob->break_active(1));			# 199
+is_zero($ob->modemlines);			# 200
 
-@opts = $ob->user_msg;
-is_ok(test_bin_list(@opts));			# 173
-is_zero(scalar $ob->user_msg);			# 174
-is_ok(1 == $ob->user_msg(1));			# 175
+sleep 1;
 
-@opts = $ob->error_msg;
-is_ok(test_bin_list(@opts));			# 176
-is_zero(scalar $ob->error_msg);			# 177
-is_ok(1 == $ob->error_msg(1));			# 178
-
-## 179 - 183: Save and Check Configuration
-
-is_ok(scalar $ob->save($cfgfile));		# 179
-
-is_ok(9600 == $ob->baudrate);			# 180
-is_ok("none" eq $ob->parity);			# 181
-is_ok(8 == $ob->databits);			# 182
-is_ok(1 == $ob->stopbits);			# 183
+is_ok($ob->resume_tx);				# 201
+is_ok(scalar $ob->dtr_active(0));			# 202
+is_ok(scalar $ob->rts_active(0));			# 203
+is_ok(scalar $ob->break_active(0));			# 204
+is_zero($ob->is_modemlines);			# 205
+is_ok(scalar $ob->debug_comm(1));			# 206
+is_zero(scalar $ob->debug_comm(0));			# 207
 
 undef $ob;
 
-## 184 - 186: Check File Headers
+## 208 - 210: Check File Headers
 
-is_ok(open CF, "$cfgfile");			# 184
+is_ok(open CF, "$cfgfile");			# 208
 my ($signature, $name, @values) = <CF>;
 close CF;
 
-is_ok(1 == grep(/SerialPort_Configuration_File/, $signature));	# 185
+is_ok(1 == grep(/SerialPort_Configuration_File/, $signature));	# 209
 
 chomp $name;
-is_ok($name eq $file);				# 186
+is_ok($name eq $file);				# 210
 
-## 187 - 188: Check that Values listed exactly once
+## 211 - 212: Check that Values listed exactly once
 
 $fault = 0;
 foreach $e (@values) {
@@ -648,10 +689,16 @@ foreach $e (@values) {
     $fault++ if ($out eq "");
     $required_param{$in}++;
     }
-is_zero($fault);				# 187
+is_zero($fault);				# 211
 
 $fault = 0;
 foreach $e (@necessary_param) {
     $fault++ unless ($required_param{$e} ==1);
     }
-is_zero($fault);				# 188
+is_zero($fault);				# 212
+
+no strict 'vars';	# turn off strict in order to check
+			# "RAW" symbols not exported by default
+
+is_bad(defined $CloseHandle);			# 213
+$CloseHandle = 1;	# for "-w"

@@ -41,7 +41,7 @@
 	<LI><A HREF="#COPYRIGHT">COPYRIGHT</A>
 	<UL>
 
-		<LI><A HREF="#DISCLAIMER">DISCLAIMER</A>
+		<LI><A HREF="#COMPATIBILITY">COMPATIBILITY</A>
 	</UL>
 
 </UL>
@@ -65,7 +65,7 @@ Win32::SerialPort - User interface to Win32 Serial API calls
 </A></H1>
 <PRE>  use Win32;
   require 5.003;
-  use Win32::SerialPort qw( :STAT 0.10 );
+  use Win32::SerialPort qw( :STAT 0.12 );
 </PRE>
 
 <P>
@@ -185,7 +185,7 @@ Win32::SerialPort - User interface to Win32 Serial API calls
 <P>
 
 <PRE>     # test suite only
-  @necessary_param = SerialPort-&gt;set_test_mode_active;
+  @necessary_param = Win32::SerialPort-&gt;set_test_mode_active;
 </PRE>
 
 <P>
@@ -975,11 +975,15 @@ under the same terms as Perl itself.
 
 <P>
 <HR>
-<H2><A NAME="DISCLAIMER">DISCLAIMER
+<H2><A NAME="COMPATIBILITY">COMPATIBILITY
 
 </A></H2>
 This is still Beta code and may be subject to functional changes which are
-not fully backwards compatible. This module is <STRONG>NOT</STRONG> ready for production use. Consider the lack of an <EM>Install</EM> program to be a feature and run in a ``standalone'' directory. 29 Aug 1998.
+not fully backwards compatible. This version (0.12) adds an
+<EM>Install.PL</EM> script to put modules into the documented Namespaces. The script uses <EM>MakeMaker</EM> tools not available in ActiveState 3xx builds. Users of those builds will
+need to install manually (see README). Some of the optional exports (those
+under the ``RAW:'' tag) have been renamed in this version. I do not know of
+any scripts outside the test suite which will be affected. 7 Nov 1998.
 
 
 <P>

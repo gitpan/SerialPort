@@ -9,10 +9,10 @@
 # Change 1..1 below to 1..last_test_to_print .
 # (It may become useful if the test is moved to ./t subdirectory.)
 
-BEGIN { $| = 1; print "1..167\n"; }
+BEGIN { $| = 1; print "1..166\n"; }
 END {print "not ok 1\n" unless $loaded;}
-use CommPort qw( :RAW :COMMPROP :DCB 0.10 );	# check misc. exports
-## use CommPort qw( :ALL 0.10 );
+use CommPort qw( :RAW :COMMPROP :DCB 0.12 );	# check misc. exports
+use Win32;
 $loaded = 1;
 print "ok 1\n";
 
@@ -46,37 +46,37 @@ if (@ARGV) {
 
 ## 2 - 26 CommPort Win32::API objects
 
-is_ok(defined $CloseHandle);		# 2
-is_ok(defined $CreateFile);		# 3
-is_ok(defined $GetCommState);		# 4
-is_ok(defined $ReadFile);		# 5
-is_ok(defined $SetCommState);		# 6
-is_ok(defined $SetupComm);		# 7
-is_ok(defined $PurgeComm);		# 8
-is_ok(defined $CreateEvent);		# 9
-is_ok(defined $GetCommTimeouts);	# 10
-is_ok(defined $SetCommTimeouts);	# 11
-is_ok(defined $GetCommProperties);	# 12
-is_ok(defined $ClearCommBreak);		# 13
-is_ok(defined $ClearCommError);		# 14
-is_ok(defined $EscapeCommFunction);	# 15
-is_ok(defined $GetCommConfig);		# 16
-is_ok(defined $GetCommMask);		# 17
-is_ok(defined $GetCommModemStatus);	# 18
-is_ok(defined $SetCommBreak);		# 19
-is_ok(defined $SetCommConfig);		# 20
-is_ok(defined $SetCommMask);		# 21
-is_ok(defined $TransmitCommChar);	# 22
+is_ok(defined &CloseHandle);		# 2
+is_ok(defined &CreateFile);		# 3
+is_ok(defined &GetCommState);		# 4
+is_ok(defined &ReadFile);		# 5
+is_ok(defined &SetCommState);		# 6
+is_ok(defined &SetupComm);		# 7
+is_ok(defined &PurgeComm);		# 8
+is_ok(defined &CreateEvent);		# 9
+is_ok(defined &GetCommTimeouts);	# 10
+is_ok(defined &SetCommTimeouts);	# 11
+is_ok(defined &GetCommProperties);	# 12
+is_ok(defined &ClearCommBreak);		# 13
+is_ok(defined &ClearCommError);		# 14
+is_ok(defined &EscapeCommFunction);	# 15
+is_ok(defined &GetCommConfig);		# 16
+is_ok(defined &GetCommMask);		# 17
+is_ok(defined &GetCommModemStatus);	# 18
+is_ok(defined &SetCommBreak);		# 19
+is_ok(defined &SetCommConfig);		# 20
+is_ok(defined &SetCommMask);		# 21
+is_ok(defined &TransmitCommChar);	# 22
 
 if ($naptime) {
     print "++++ page break\n";
     sleep $naptime;
 }
 
-is_ok(defined $WaitCommEvent);		# 23
-is_ok(defined $WriteFile);		# 24
-is_ok(defined $GetLocalError);		# 25
-is_ok(defined $GetOverlappedResult);	# 26
+is_ok(defined &WaitCommEvent);		# 23
+is_ok(defined &WriteFile);		# 24
+is_ok(defined &ResetEvent);		# 25
+is_ok(defined &GetOverlappedResult);	# 26
 
 is_ok(0x1 == PURGE_TXABORT);		# 27
 is_ok(0x2 == PURGE_RXABORT);		# 28
@@ -266,27 +266,25 @@ is_ok(0x3000 == FM_fRtsControl);	# 161
 is_ok(0x4000 == FM_fAbortOnError);	# 162
 is_ok(0xffff8000 == FM_fDummy2);	# 163
 
-is_ok(defined $ResetEvent);		# 164
+$event = CreateEvent($null,	# no security
+		     1,		# explicit reset req
+		     0,		# initial event reset
+		     $null);	# no name
 
-$event = $CreateEvent->Call($null,	# no security
-			    1,		# explicit reset req
-			    0,		# initial event reset
-			    $null);	# no name
-
-is_ok($event);				# 165
+is_ok($event);				# 164
 CommPort->OS_Error unless ($event);
 
-$ResetEvent->Call($event);
-$ok = $GetLocalError->Call();
-is_ok(0 == $ok);			# 166
+ResetEvent($event);
+$ok = Win32::GetLastError;
+is_ok(0 == $ok);			# 165
 print "Should Pass: ";
 CommPort->OS_Error;
 
-$ok = $CloseHandle->Call($event);	# $MS doesn't check return either
+$ok = CloseHandle($event);	# $MS doesn't check return either
 
-$ResetEvent->Call($event);
-$ok = $GetLocalError->Call();
-is_ok($ok);				# 167
+ResetEvent($event);
+$ok = Win32::GetLastError;
+is_ok($ok);				# 166
 print "Should Fail: ";
 CommPort->OS_Error;
 

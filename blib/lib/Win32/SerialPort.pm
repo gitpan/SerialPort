@@ -1,25 +1,25 @@
-package SerialPort;
+package Win32::SerialPort;
 
 use Win32;
-use CommPort qw( :STAT :PARAM 0.10 );
+use Win32API::CommPort qw( :STAT :PARAM 0.12 );
 
 use Carp;
 use strict;
 
 use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-$VERSION = '0.10';
+$VERSION = '0.12';
 
 require Exporter;
 ## require AutoLoader;
 
-@ISA = qw( Exporter CommPort );
+@ISA = qw( Exporter Win32API::CommPort );
 # Items to export into callers namespace by default. Note: do not export
 # names by default without a very good reason. Use EXPORT_OK instead.
 # Do not simply export all your public functions/methods/constants.
 
 @EXPORT= qw();
-@EXPORT_OK= @CommPort::EXPORT_OK;
-%EXPORT_TAGS = %CommPort::EXPORT_TAGS;
+@EXPORT_OK= @Win32API::CommPort::EXPORT_OK;
+%EXPORT_TAGS = %Win32API::CommPort::EXPORT_TAGS;
 
 # parameters that must be included in a "save" and "checking subs"
 
@@ -61,7 +61,8 @@ my $Verbose = 0;
 
     # test*.t only - suppresses default messages
 sub set_test_mode_active {
-    CommPort->set_no_messages;	# object not defined but :: upsets strict
+    Win32API::CommPort->set_no_messages;
+	# object not defined but :: upsets strict
     return (keys %validate);
 }
 
@@ -164,6 +165,34 @@ sub restart {
     write_settings($self);
 }
 
+## sub new_as_is {
+##     my $proto = shift;
+##     my $class = ref($proto) || $proto;
+## 
+##     return unless (@_);
+##     my $name = shift;
+##     my @items;
+## 
+##     my $self  = new ($class, $name);
+##     if ($Verbose or not $self) {
+##         print "class = $class\n";
+##         print "name = $name\n";
+##     }
+##     if ($self) {
+##         # initialize returns number of faults
+##         if ( $self->initialize(@items) ) {
+## 	    die "init from new_as_is";
+##             nocarp || $self->close;
+##             return;
+##         }
+##     }
+## 
+##     $self->update_DCB;
+##     if ($Verbose) {
+##         print "writing settings to $self->{ALIAS}\n";
+##     }
+##     return $self;
+## }
 
 sub start {
     my $proto = shift;
@@ -213,7 +242,10 @@ sub write_settings {
 
     # initialize returns number of faults
     if ( $self->initialize(@items) ) {
-        nocarp || $self->close;
+        unless ($self->nocarp) {
+            carp "write_settings failed, closing port"; 
+	    $self->close;
+	}
         return;
     }
 
@@ -231,7 +263,10 @@ sub save {
     my $value;
 
     return unless (@_);
-    return unless ($self->init_done);
+    unless ($self->init_done) {
+        carp "can't save until init_done"; 
+	return;
+    }
 
     my $filename = shift;
     unless ( open CF, ">$filename" ) {
@@ -277,7 +312,7 @@ sub error_msg {
 sub baudrate {
     my $self = shift;
     if (@_) {
-	unless ( $self->is_baudrate(shift) ) {
+	unless ( defined $self->is_baudrate( shift ) ) {
             if ($self->{U_MSG} or $Verbose) {
                 carp "Could not set baudrate on $self->{ALIAS}";
             }
@@ -393,7 +428,7 @@ sub set_write_buf {
     if (@_) {
         return unless (@_ == 1);
         my $wbuf = int shift;
-        return unless (($wbuf > 0) and ($wbuf <= $self->{MAX_TXB}));
+        return unless (($wbuf >= 0) and ($wbuf <= $self->{MAX_TXB}));
         $self->is_write_buf($wbuf);
     }
     return $self->is_write_buf;
@@ -691,7 +726,7 @@ Win32::SerialPort - User interface to Win32 Serial API calls
 
   use Win32;
   require 5.003;
-  use Win32::SerialPort qw( :STAT 0.10 );
+  use Win32::SerialPort qw( :STAT 0.12 );
 
 =head2 Constructors
 
@@ -757,7 +792,7 @@ Win32::SerialPort - User interface to Win32 Serial API calls
   $PortObj->parity_enable(F);	# faults during input
 
      # test suite only
-  @necessary_param = SerialPort->set_test_mode_active;
+  @necessary_param = Win32::SerialPort->set_test_mode_active;
 
 =head2 Operating Methods
 
@@ -1244,11 +1279,15 @@ Copyright (C) 1998, Bill Birthisel. All rights reserved.
 This module is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-=head2 DISCLAIMER
+=head2 COMPATIBILITY
 
 This is still Beta code and may be subject to functional changes which
-are not fully backwards compatible.  This module is B<NOT> ready
-for production use. Consider the lack of an I<Install> program to be a
-feature and run in a "standalone" directory. 29 Aug 1998.
+are not fully backwards compatible. This version (0.12) adds an
+I<Install.PL> script to put modules into the documented Namespaces.
+The script uses I<MakeMaker> tools not available in ActiveState 3xx
+builds. Users of those builds will need to install manually (see README).
+Some of the optional exports (those under the "RAW:" tag) have been
+renamed in this version. I do not know of any scripts outside the test
+suite which will be affected. 7 Nov 1998.
 
 =cut

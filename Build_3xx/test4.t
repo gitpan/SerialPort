@@ -27,7 +27,7 @@ use strict;
 use Win32;
 
 my $file = "COM1";
-my $cfgfile = $file."_test.cfg";
+my $cfgfile = "../".$file."_test.cfg";
 
 my $naptime = 0;	# pause between output pages
 if (@ARGV) {
@@ -258,7 +258,13 @@ if ($naptime) {
 
 is_ok ($ob->alias eq "oddPort");		# 67
 
-is_ok (scalar $ob->is_parity_enable);		# 68
+$pass = $ob->can_parity_enable;
+if ($pass) {
+    is_ok (scalar $ob->is_parity_enable);	# 68
+}
+else {
+    is_zero (scalar $ob->is_parity_enable);	# 68
+}
 
 is_ok ($ob->is_xoff_limit == 45);		# 69
 
